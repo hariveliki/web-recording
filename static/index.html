@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How To Record</title>
+    <link rel="stylesheet" href="/static/index.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>How To Record</h1>
+
+      <div>
+        <button id="recordButton">Record</button>
+        <button id="stopButton">Stop</button>
+      </div>
+
+      <div class="error" id="error"></div>
+    </div>
+
+    <script type="module">
+      import { startRecording, stopRecording } from "/static/index.js";
+
+      $(document).ready(function () {
+        $("#recordButton").on("click", startRecording);
+        $("#stopButton").on("click", stopRecording);
+      });
+    </script>
+  </body>
+</html>
