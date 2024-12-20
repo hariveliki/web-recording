@@ -7,7 +7,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import pathlib
 import shutil
-from ollama import generate
 import whisper
 
 load_dotenv()
