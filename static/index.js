@@ -29,7 +29,8 @@ async function stopRecording() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        console.log(data)
+        await getAudioText();
       } else {
         showError("Failed to upload audio: " + response.statusText);
       }
@@ -40,10 +41,27 @@ async function stopRecording() {
   }
 }
 
+async function getAudioText() {
+  try {
+    const response = await fetch("/get_audio_text", {
+      method: "GET",
+    });
+    const data = await response.json();
+    if (response.ok) {
+      $("#audioText").val(data.text);
+    } else {
+      showError("Failed to get audio text: " + response.statusText);
+    }
+  } catch (error) {
+    showError("Error while getAudioText: " + error.message);
+  }
+}
+
+
 function showError(message) {
   const errorDiv = document.getElementById("error");
   errorDiv.textContent = message;
   errorDiv.style.display = "block";
 }
 
-export { startRecording, stopRecording };
+export { startRecording, stopRecording, getAudioText };

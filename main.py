@@ -8,9 +8,10 @@ from fastapi.responses import FileResponse
 import pathlib
 import shutil
 from ollama import generate
-
+import whisper
 
 load_dotenv()
+AUDIO_RECORDING_PATH = "audio/recording.txt"
 
 app = FastAPI(title="Ollama Web Service")
 
@@ -34,10 +35,22 @@ async def read_favicon():
 @app.post("/upload_audio")
 async def upload_audio(file: UploadFile = File(...)):
     os.makedirs("audio", exist_ok=True)
-    file_path = f"audio/{file.filename}"
-    with open(file_path, "wb") as buffer:
+    with open(AUDIO_RECORDING_PATH, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    return {"info": f"File uploaded to {file_path}"}
+    model = whisper.load_model("turbo")
+    result = model.transcribe(AUDIO_RECORDING_PATH)
+    with open(AUDIO_RECORDING_PATH, "w") as file:
+        file.write(result["text"])
+    return {"text": "Uploaded and transcribed audio"}
+
+
+@app.get("/get_audio_text")
+async def get_audio_text():
+    if not os.path.exists(AUDIO_RECORDING_PATH):
+        return {"text": ""}
+    with open(AUDIO_RECORDING_PATH, "r") as file:
+        text = file.read()
+    return {"text": text}
 
 
 @app.get("/")
